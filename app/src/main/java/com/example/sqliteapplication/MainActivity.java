@@ -1,7 +1,9 @@
 package com.example.sqliteapplication;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -87,10 +89,27 @@ public class MainActivity extends AppCompatActivity {
         customerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                CustomerModel clickedCustomer = (CustomerModel) adapterView.getItemAtPosition(i);
-                dataBaseHelper.deleteCustomer(clickedCustomer);
-                showCustomerOnList(dataBaseHelper);
-                Toast.makeText(MainActivity.this, "Deleted " + clickedCustomer.toString(), Toast.LENGTH_SHORT).show();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Delete")
+                        .setMessage("Are you sure to delete?")
+                        .setIcon(R.drawable.ic_delete_24)
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                CustomerModel clickedCustomer = (CustomerModel) adapterView.getItemAtPosition(i);
+                                dataBaseHelper.deleteCustomer(clickedCustomer);
+                                showCustomerOnList(dataBaseHelper);
+                                Toast.makeText(MainActivity.this, "Deleted " + clickedCustomer.toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+
             }
         });
     }

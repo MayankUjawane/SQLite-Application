@@ -66,7 +66,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public boolean deleteCustomer(CustomerModel customerModel) {
         //find customer model in database. if it found, delete it and return true.
         //if it is not found, return false.
-
+        
         SQLiteDatabase db = this.getWritableDatabase();
         String queryString = "DELETE FROM " + CUSTOMER_TABLE + " WHERE " + COLUMN_ID + " = " + customerModel.getId();
 
