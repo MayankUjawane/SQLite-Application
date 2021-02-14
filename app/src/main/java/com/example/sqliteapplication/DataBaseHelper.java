@@ -84,6 +84,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     }
 
+    //get all customer details
     public List<CustomerModel> selectEveryone() {
         //1.Create an empty list  2.Fill it from the database query  3.Return it to the MainActivity
         List<CustomerModel> returnList = new ArrayList<>();
@@ -97,7 +98,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(queryString, null);
 
-        // looping through all rows and adding to list
+        //looping through all rows and adding to list
         //cursor.moveToFirst returns true if there were items selected.
         if (cursor.moveToFirst()) {
             //loop through the cursor (result set) and create new customer objects. Put them into the return list.
@@ -125,24 +126,53 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return returnList;
     }
 
+    //for checking already details exist or not
+    public int getName(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + CUSTOMER_TABLE+" WHERE "+COLUMN_CUSTOMER_NAME+" = '"+name+"'", null);
+        int noOfContacts = cursor.getCount();
+        cursor.close();
+        db.close();
+        return noOfContacts;
+    }
 
-
-
-    /*
     // code to update the customer
-    public int updateContact(CustomerModel customerModel) {
+    public void updateContact(CustomerModel customerModel) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, customerModel.getName());
-        values.put(KEY_PH_NO, customerModel.getPhoneNumber());
+        values.put(COLUMN_CUSTOMER_NAME, customerModel.getName());
+        values.put(COLUMN_CUSTOMER_AGE, customerModel.getAge());
+        values.put(COLUMN_ACTIVE_CUSTOMER, customerModel.getIsActive());
 
         // updating row
-        return db.update(CUSTOMER_TABLE, values, KEY_ID + " = ?",
+        db.update(CUSTOMER_TABLE, values, COLUMN_ID + " = ?",
                 new String[] { String.valueOf(customerModel.getId()) });
+        db.close();
     }
 
-     */
+    //for searching
+    public List<CustomerModel> search (String keyword) {
+        List<CustomerModel> contacts = null;
+        try {
+            SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+            Cursor cursor = sqLiteDatabase.rawQuery("select * from " + CUSTOMER_TABLE + " where " + COLUMN_CUSTOMER_NAME + " like ?", new String[] { "%" + keyword + "%" });
+            if (cursor.moveToFirst()) {
+                contacts = new ArrayList<CustomerModel>();
+                do {
+                    CustomerModel customerModel = new CustomerModel();
+                    customerModel.setId(cursor.getInt(0));
+                    customerModel.setName(cursor.getString(1));
+                    customerModel.setAge(cursor.getInt(2));
+                    customerModel.setIsActive(cursor.getInt(3) == 1 ? true : false);
+                    contacts.add(customerModel);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            contacts = null;
+        }
+        return contacts;
+    }
 
     // Getting Customers Count
     public int getCustomersCount() {
