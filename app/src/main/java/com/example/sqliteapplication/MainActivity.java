@@ -12,10 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     Switch activeCustomer;
     ListView customerList;
     SearchView searchView;
+    RelativeLayout relativeLayout;
 
     DataBaseHelper dataBaseHelper;
     ArrayAdapter customerArrayAdapter;
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         age = findViewById(R.id.et_age);
         name = findViewById(R.id.et_name);
         searchView = findViewById(R.id.search_view);
+        relativeLayout = findViewById(R.id.relative_layout);
 
         dataBaseHelper = new DataBaseHelper(MainActivity.this);
         //displaying list of customers on the list view
@@ -49,17 +53,21 @@ public class MainActivity extends AppCompatActivity {
 
         //for searching functionality
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
             @Override
             //It searches the query on the submission of content over SearchView editor. It is case dependent.
             public boolean onQueryTextSubmit(String s) {
                 DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
                 List<CustomerModel> detailsList = dataBaseHelper.search(s);
 
-                if (detailsList.contains(s)) {
+                if (detailsList != null) {
                     customerArrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, dataBaseHelper.search(s));
                     customerList.setAdapter(customerArrayAdapter);
                 } else {
-                    Toast.makeText(MainActivity.this, "No Match found", Toast.LENGTH_LONG).show();
+                    List<String> nothingFound = new ArrayList<>();
+                    nothingFound.add("Nothing Found");
+                    customerArrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, nothingFound);
+                    customerList.setAdapter(customerArrayAdapter);
                 }
                 return false;
             }
@@ -70,11 +78,14 @@ public class MainActivity extends AppCompatActivity {
                 DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
                 List<CustomerModel> detailsList = dataBaseHelper.search(s);
 
-                if (detailsList.contains(s)) {
+                if (detailsList != null) {
                     customerArrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, dataBaseHelper.search(s));
                     customerList.setAdapter(customerArrayAdapter);
                 } else {
-                    Toast.makeText(MainActivity.this, "No Match found", Toast.LENGTH_LONG).show();
+                    List<String> nothingFound = new ArrayList<>();
+                    nothingFound.add("Nothing Found");
+                    customerArrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, nothingFound);
+                    customerList.setAdapter(customerArrayAdapter);
                 }
                 return false;
             }

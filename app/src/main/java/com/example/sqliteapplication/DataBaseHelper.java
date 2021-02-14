@@ -155,10 +155,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public List<CustomerModel> search (String keyword) {
         List<CustomerModel> contacts = null;
         try {
-            SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
             Cursor cursor = sqLiteDatabase.rawQuery("select * from " + CUSTOMER_TABLE + " where " + COLUMN_CUSTOMER_NAME + " like ?", new String[] { "%" + keyword + "%" });
             if (cursor.moveToFirst()) {
-                contacts = new ArrayList<CustomerModel>();
+                contacts = new ArrayList<>();
                 do {
                     CustomerModel customerModel = new CustomerModel();
                     customerModel.setId(cursor.getInt(0));
