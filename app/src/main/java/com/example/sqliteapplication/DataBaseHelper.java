@@ -90,7 +90,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         List<CustomerModel> returnList = new ArrayList<>();
 
         //Select All Query
-        String queryString = "SELECT * FROM " + CUSTOMER_TABLE;
+        String queryString = "SELECT * FROM " + CUSTOMER_TABLE + " ORDER BY " + COLUMN_CUSTOMER_NAME + " ASC";
 
         //use getWritableDatabase only when you plan to inset, update or delete records.
         //getWritableDatabase locks the data file so other processes may not access it.
@@ -156,7 +156,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         List<CustomerModel> contacts = null;
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("select * from " + CUSTOMER_TABLE + " where " + COLUMN_CUSTOMER_NAME + " like ?", new String[] { "%" + keyword + "%" });
+            Cursor cursor = sqLiteDatabase.rawQuery("select * from " + CUSTOMER_TABLE + " where " + COLUMN_CUSTOMER_NAME + " like ?"+ " ORDER BY "+ COLUMN_CUSTOMER_NAME+" ASC", new String[] { "%" + keyword + "%" });
             if (cursor.moveToFirst()) {
                 contacts = new ArrayList<>();
                 do {
